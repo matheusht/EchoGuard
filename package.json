@@ -11,13 +11,17 @@
   "dependencies": {
     "@mapbox/mapbox-gl-geocoder": "^5.0.3",
     "@mapbox/search-js-react": "^1.0.0-beta.22",
+    "@next/env": "^15.0.2",
     "@radix-ui/react-slot": "^1.1.0",
     "@tremor/react": "^3.18.3",
     "@types/mapbox__mapbox-gl-geocoder": "^5.0.0",
+    "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "git-cz": "^4.9.0",
+    "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.447.0",
     "mapbox-gl": "^3.7.0",
     "next": "14.2.14",
@@ -29,6 +33,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

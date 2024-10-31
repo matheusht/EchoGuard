@@ -1,7 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-
-import { useState, useMemo } from "react";
+import debounce from "lodash.debounce";
+import {
+  useState,
+  useMemo,
+  useRef,
+  MutableRefObject,
+  LegacyRef,
+  useCallback,
+  useEffect,
+  MouseEventHandler,
+} from "react";
 import {
   Card,
   CardContent,
@@ -11,7 +20,7 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Thermometer, Droplets, Wind, Search } from "lucide-react";
-import Map, { Marker } from "react-map-gl";
+import Map, { MapRef, Marker } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
   LineChart,
@@ -26,6 +35,7 @@ import {
 } from "recharts";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 
 const MAPBOX_TOKEN =
   process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ||
@@ -34,6 +44,17 @@ const OPENWEATHER_API_KEY =
   process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY ||
   "61a8c8e99569c319d75a27a0f2ddb4f2";
 
+interface Suggestion {
+  id: string;
+  place_name: string;
+  geometry: {
+    coordinates: [number, number];
+  };
+  properties: {
+    full_address: string;
+    name: string;
+  };
+}
 interface WeatherData {
   main: {
     temp: number;
@@ -76,7 +97,9 @@ export default function FireSpotPrediction() {
   const [searchInput, setSearchInput] = useState<string>("");
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const mapref = useRef<MutableRefObject<MapRef | undefined>>();
   const [viewState, setViewState] = useState({
     latitude: -15.7801,
     longitude: -47.9292,
@@ -99,16 +122,22 @@ export default function FireSpotPrediction() {
     return null;
   };
 
-  const handleSearch = async () => {
-    if (!searchInput) return;
+  function removeSpecialChars(input: string): string {
+    return input.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+
+  const handleSearch = async (input = searchInput) => {
+    if (!input) return;
 
     setLoading(true);
     setError(null);
 
+    console.log(searchInput);
+
     try {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-          searchInput
+          removeSpecialChars(input)
         )}&appid=${OPENWEATHER_API_KEY}&units=metric`
       );
       if (!response.ok) throw new Error("Falha ao buscar dados meteorológicos");
@@ -154,12 +183,53 @@ export default function FireSpotPrediction() {
       }))
     : [];
 
+  const handleInputChange = useCallback(
+    debounce(async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const input = e.target.value;
+      setSearchInput(input);
+
+      if (input.length > 2) {
+        const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+        const url = `https://api.mapbox.com/search/geocode/v6/forward?access_token=${token}&q=${input}`;
+
+        try {
+          const response = await axios.get(url);
+          setSuggestions(response.data.features as Suggestion[]);
+        } catch (error) {
+          console.error("Error fetching autocomplete suggestions:", error);
+        }
+      } else {
+        setSuggestions([]);
+      }
+    }, 300), // Debounce with 300ms delay
+    []
+  );
+
+  const handleChangeInputCall = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+    setSearchInput(input);
+    handleInputChange(e);
+  };
+
+  useEffect(() => {
+    return () => {
+      handleInputChange.cancel();
+    };
+  }, []);
+
+  const handleSuggestionClick = (place: Suggestion) => {
+    setSearchInput(place.properties.name);
+    setSuggestions([]);
+    handleSearch(place.properties.name);
+  };
+
+  console.log(suggestions);
+
   return (
     <div className="container mx-auto p-4 min-h-screen bg-background text-foreground">
       <h1 className="text-4xl font-bold mb-8 text-center text-primary">
         Previsão de Risco de Incêndio
       </h1>
-
       <Card className="mb-8">
         <CardHeader>
           <CardTitle className="text-2xl">Buscar Localização</CardTitle>
@@ -168,21 +238,41 @@ export default function FireSpotPrediction() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex space-x-2">
-            <Input
-              type="text"
-              placeholder="Digite uma cidade ou local"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              className="flex-grow"
-            />
-            <Button
-              onClick={handleSearch}
-              disabled={loading}
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              <Search className="mr-2 h-4 w-4" /> Buscar
-            </Button>
+          <div className="relative flex flex-col space-y-2">
+            {/* Suggestions list positioned above the input */}
+
+            {/* Input and button container */}
+            <div className="flex space-x-2">
+              <Input
+                type="text"
+                placeholder="Digite uma cidade ou local"
+                value={searchInput}
+                onChange={handleChangeInputCall}
+                className="flex-grow"
+              />
+              <Button
+                onClick={
+                  handleSearch as unknown as MouseEventHandler<HTMLButtonElement>
+                }
+                disabled={loading}
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                <Search className="mr-2 h-4 w-4" /> Buscar
+              </Button>
+            </div>
+            {suggestions.length > 0 && (
+              <ul className="absolute top-full mb-2 w-full bg-white shadow-lg border rounded-md z-10">
+                {suggestions.map((place) => (
+                  <li
+                    key={place.id}
+                    onClick={() => handleSuggestionClick(place)}
+                    className="p-2 cursor-pointer hover:bg-gray-200 text-black"
+                  >
+                    {place.properties.full_address}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           {error && <p className="text-destructive mt-2">{error}</p>}
         </CardContent>
@@ -204,6 +294,7 @@ export default function FireSpotPrediction() {
             <CardContent className="p-0">
               <div className="h-[400px] relative">
                 <Map
+                  ref={mapref as unknown as LegacyRef<MapRef>}
                   {...viewState}
                   onMove={(evt) => setViewState(evt.viewState)}
                   style={{ width: "100%", height: "100%" }}
