@@ -1,38 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+---
 
-## Getting Started
+### EchoGuard README
 
-aplication deployed at www.fire-stop.vercel.app
+```markdown
+# EchoGuard
 
-First, run the development server:
+![EchoGuard Banner](https://via.placeholder.com/800x200.png?text=EchoGuard+Banner)  
+*Predicting fire risks to protect communities worldwide*
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+EchoGuard is a web application designed to assist authorities and firefighters in predicting fire risks and alerting populations to potential fire hazards. By leveraging location-based data, it empowers proactive fire safety measures across local communities globally.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Live Demo:** [https://echo-guard-gilt.vercel.app/](https://echo-guard-gilt.vercel.app/)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+- **Fire Risk Prediction:** Input a location to assess fire risk, likely using weather, vegetation, and historical data (exact sources TBD).  
+- **Early Warnings:** Enables timely alerts for evacuations and preventive actions in high-risk areas.  
+- **Resource Optimization:** Helps firefighters allocate resources efficiently based on predicted risk levels.  
+- **User-Friendly Design:** Simple interface for professionals and communities to access critical insights.  
 
-To learn more about Next.js, take a look at the following resources:
+## Installation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/yourusername/echo-guard.git
+   cd echo-guard
+Install Dependencies:
+bash
+Wrap
+Copy
+npm install
+(Note: Adjust this based on your actual tech stack, e.g., npm, yarn, etc.)
+Run Locally:
+bash
+Wrap
+Copy
+npm start
+Open http://localhost:3000 in your browser.
+Usage
+Enter a location on the homepage to view its fire risk assessment.
+Use the insights to plan evacuations, allocate firefighting resources, or implement preventive measures.
+Share predictions with local authorities or communities.
+Contributing
+We’re excited to collaborate on EchoGuard! To contribute:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Fork the repository.
+Create a new branch (git checkout -b feature/your-feature).
+Commit your changes (git commit -m "Add your feature").
+Push to your branch (git push origin feature/your-feature).
+Open a Pull Request.
+Adhere to our Code of Conduct and file issues in the Issues tab.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Future Plans
+Integrate real-time data APIs (e.g., weather, satellite imagery).
+Expand language support beyond Portuguese.
+Add visualization tools like risk heatmaps.
+License
+This project is licensed under the MIT License.
