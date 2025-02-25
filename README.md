@@ -1,6 +1,7 @@
+
 ---
 
-### EchoGuard README
+### EchoGuard
 
 ```markdown
 # EchoGuard
@@ -27,35 +28,3 @@ EchoGuard is a web application designed to assist authorities and firefighters i
    ```bash
    git clone https://github.com/yourusername/echo-guard.git
    cd echo-guard
-Install Dependencies:
-bash
-Wrap
-Copy
-npm install
-(Note: Adjust this based on your actual tech stack, e.g., npm, yarn, etc.)
-Run Locally:
-bash
-Wrap
-Copy
-npm start
-Open http://localhost:3000 in your browser.
-Usage
-Enter a location on the homepage to view its fire risk assessment.
-Use the insights to plan evacuations, allocate firefighting resources, or implement preventive measures.
-Share predictions with local authorities or communities.
-Contributing
-We’re excited to collaborate on EchoGuard! To contribute:
-
-Fork the repository.
-Create a new branch (git checkout -b feature/your-feature).
-Commit your changes (git commit -m "Add your feature").
-Push to your branch (git push origin feature/your-feature).
-Open a Pull Request.
-Adhere to our Code of Conduct and file issues in the Issues tab.
-
-Future Plans
-Integrate real-time data APIs (e.g., weather, satellite imagery).
-Expand language support beyond Portuguese.
-Add visualization tools like risk heatmaps.
-License
-This project is licensed under the MIT License.
