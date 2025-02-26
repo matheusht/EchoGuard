@@ -1,6 +1,5 @@
 # EchoGuard
 
-![EchoGuard Banner](https://via.placeholder.com/800x200.png?text=EchoGuard+Banner)  
 *Predicting fire risks to protect communities worldwide*
 
 ## Overview
